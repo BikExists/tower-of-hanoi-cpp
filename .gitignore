@@ -1,0 +1,12 @@
+# Binaries and compiled objects
+*.exe
+*.o
+*.obj
+*.out
+
+# System and editor files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.log

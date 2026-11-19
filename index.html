@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tower of Hanoi in C++ | Interactive DSA Masterclass</title>
+    <meta name="description" content="Interactive 2nd Year College DSA Masterclass for Tower of Hanoi in C++: Visual Simulator, Call Stack Tracer, Recursion Tree, Complexity Derivation, and Viva Prep.">
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <!-- ================= NAVBAR ================= -->
+    <header class="navbar">
+        <div class="nav-brand">
+            <span class="brand-icon">🗼</span>
+            <div class="brand-text">
+                <h1>Tower of Hanoi <span class="cpp-badge">C++</span></h1>
+                <span class="brand-sub">DSA 2nd Year College Companion</span>
+            </div>
+        </div>
+
+        <nav class="nav-links">
+            <a href="#simulator" class="nav-link active">🎮 Simulator</a>
+            <a href="#callstack-tree" class="nav-link">🌲 Stack & Tree</a>
+            <a href="#cpp-code" class="nav-link">💻 C++ Code</a>
+            <a href="#math-derivation" class="nav-link">📐 Math & Proofs</a>
+            <a href="#viva-quiz" class="nav-link">📝 Viva & Quiz</a>
+        </nav>
+
+        <div class="nav-actions">
+            <button id="soundToggleBtn" class="icon-btn" title="Toggle Sound Effects" aria-label="Toggle Sound">
+                <span id="soundIcon">🔊</span>
+            </button>
+            <button id="themeToggleBtn" class="icon-btn" title="Toggle Dark/Light Mode" aria-label="Toggle Theme">
+                <span id="themeIcon">🌙</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- ================= HERO SECTION ================= -->
+    <section class="hero-section">
+        <div class="hero-content">
+            <div class="hero-tag">🎓 2nd Year DSA • Recursion & Divide-and-Conquer</div>
+            <h2>Master <span class="gradient-text">Tower of Hanoi</span> with Intuition & Code</h2>
+            <p>
+                A legendary algorithmic puzzle invented by French mathematician Édouard Lucas in 1883.
+                It is the ultimate university classic for understanding <strong>how recursive function calls work, how the OS manages call stacks,</strong> and <strong>why recurrence relations lead to exponential time complexity</strong>.
+            </p>
+        </div>
+
+        <!-- Metric Badges -->
+        <div class="metrics-grid">
+            <div class="metric-card">
+                <div class="metric-title">Recurrence Relation</div>
+                <div class="metric-value">T(n) = 2T(n-1) + 1</div>
+                <div class="metric-sub">T(1) = 1 (Base Case)</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-title">Optimal Moves</div>
+                <div class="metric-value">M(n) = 2ⁿ - 1</div>
+                <div class="metric-sub">Exponential Growth</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-title">Time Complexity</div>
+                <div class="metric-value">O(2ⁿ)</div>
+                <div class="metric-sub">Strict Lower & Upper Bound</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-title">Space (Auxiliary)</div>
+                <div class="metric-value">O(n)</div>
+                <div class="metric-sub">Max Call Stack Depth</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================= MAIN CONTAINER ================= -->
+    <main class="main-container">
+
+        <!-- ================= SECTION 1: INTERACTIVE SIMULATOR ================= -->
+        <section id="simulator" class="card-section">
+            <div class="section-header">
+                <div>
+                    <h2><span class="sec-num">01.</span> Visual Hanoi Simulator</h2>
+                    <p class="sec-desc">Play manually to build intuition or watch the recursive algorithm solve it step-by-step.</p>
+                </div>
+                <div class="mode-switch-wrapper">
+                    <span class="mode-label">Mode:</span>
+                    <div class="segmented-control">
+                        <button id="modeAutoBtn" class="segment-btn active">🤖 Auto-Solver</button>
+                        <button id="modeManualBtn" class="segment-btn">🖐️ Manual Play</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Controls Toolbar -->
+            <div class="simulator-toolbar">
+                <div class="control-group">
+                    <label for="diskCountSelect"><strong>Disks (n):</strong></label>
+                    <select id="diskCountSelect">
+                        <option value="1">1 Disk (1 move)</option>
+                        <option value="2">2 Disks (3 moves)</option>
+                        <option value="3" selected>3 Disks (7 moves)</option>
+                        <option value="4">4 Disks (15 moves)</option>
+                        <option value="5">5 Disks (31 moves)</option>
+                        <option value="6">6 Disks (63 moves)</option>
+                        <option value="7">7 Disks (127 moves)</option>
+                    </select>
+                </div>
+
+                <div class="control-group" id="solverControlsGroup">
+                    <button id="stepPrevBtn" class="btn btn-secondary" title="Previous Step">⏮️ Prev</button>
+                    <button id="playPauseBtn" class="btn btn-primary" title="Play / Pause Auto Solver">▶️ Play</button>
+                    <button id="stepNextBtn" class="btn btn-secondary" title="Next Step">Next ⏭️</button>
+                    <button id="resetBtn" class="btn btn-outline" title="Reset to Initial State">🔄 Reset</button>
+                </div>
+
+                <div class="control-group" id="manualControlsGroup" style="display: none;">
+                    <button id="undoMoveBtn" class="btn btn-secondary" title="Undo Last Move">↩️ Undo</button>
+                    <button id="resetManualBtn" class="btn btn-outline" title="Reset Game">🔄 Reset</button>
+                    <div class="timer-display">⏱️ <span id="manualTimer">00:00</span></div>
+                </div>
+
+                <div class="control-group speed-group" id="speedControlGroup">
+                    <label for="speedSlider">Speed: <span id="speedValue">1.0x</span></label>
+                    <input type="range" id="speedSlider" min="0.25" max="3" step="0.25" value="1">
+                </div>
+
+                <div class="stats-badge-group">
+                    <div class="stat-pill">
+                        <span class="stat-label">Moves:</span>
+                        <span id="currentMoveDisplay" class="stat-num">0</span>
+                        <span class="stat-divider">/</span>
+                        <span id="optimalMovesDisplay" class="stat-num">7</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Toast / Status Message -->
+            <div id="statusBanner" class="status-banner info">
+                <span class="status-icon">💡</span>
+                <span id="statusText">Ready to start. Click "Play" or step through the algorithm.</span>
+            </div>
+
+            <!-- Progress Bar -->
+            <div class="progress-bar-container">
+                <div id="hanoiProgressBar" class="progress-bar-fill" style="width: 0%;"></div>
+            </div>
+
+            <!-- Visual Pegs Stage -->
+            <div class="hanoi-stage-wrapper">
+                <div class="hanoi-stage" id="hanoiStage">
+                    <!-- Rod A -->
+                    <div class="rod-container" data-rod="A" id="rodColA">
+                        <div class="rod-label-tag">Rod A <span class="rod-role">(Source)</span></div>
+                        <div class="rod-pillar"></div>
+                        <div class="disks-stack" id="stackA"></div>
+                        <div class="rod-base"></div>
+                    </div>
+
+                    <!-- Rod B -->
+                    <div class="rod-container" data-rod="B" id="rodColB">
+                        <div class="rod-label-tag">Rod B <span class="rod-role">(Auxiliary)</span></div>
+                        <div class="rod-pillar"></div>
+                        <div class="disks-stack" id="stackB"></div>
+                        <div class="rod-base"></div>
+                    </div>
+
+                    <!-- Rod C -->
+                    <div class="rod-container" data-rod="C" id="rodColC">
+                        <div class="rod-label-tag">Rod C <span class="rod-role">(Destination)</span></div>
+                        <div class="rod-pillar"></div>
+                        <div class="disks-stack" id="stackC"></div>
+                        <div class="rod-base"></div>
+                    </div>
+                </div>
+
+                <!-- Manual Rules Legend -->
+                <div class="stage-footer">
+                    <div class="legend-item"><span class="legend-dot"></span> Rule 1: Move only 1 disk at a time</div>
+                    <div class="legend-item"><span class="legend-dot"></span> Rule 2: Only top disk of any rod can be picked</div>
+                    <div class="legend-item"><span class="legend-dot"></span> Rule 3: Larger disk cannot sit on smaller disk</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= SECTION 2: CALL STACK & RECURSION TREE ================= -->
+        <section id="callstack-tree" class="card-section">
+            <div class="section-header">
+                <div>
+                    <h2><span class="sec-num">02.</span> Call Stack & Recursion Tree Visualization</h2>
+                    <p class="sec-desc">Witness how the Operating System's execution stack expands and unwinds in real-time.</p>
+                </div>
+            </div>
+
+            <div class="dual-vis-grid">
+                <!-- Live Call Stack Panel -->
+                <div class="vis-panel">
+                    <div class="vis-panel-header">
+                        <div class="vis-title">
+                            <span>📚 Runtime Call Stack</span>
+                            <span class="stack-depth-badge">Depth: <span id="currentDepthVal">0</span> / <span id="maxDepthVal">3</span></span>
+                        </div>
+                        <span class="badge-sub">LIFO (Last In First Out)</span>
+                    </div>
+                    <div class="call-stack-container" id="callStackContainer">
+                        <div class="stack-empty-placeholder">Call stack is empty. Click Play/Next to begin execution.</div>
+                    </div>
+                    <div class="stack-footer-note">
+                        💡 <strong>Key DSA Concept:</strong> Maximum stack height never exceeds <code>O(n)</code>. When a recursive sub-tree finishes, its activation records are immediately popped to free memory!
+                    </div>
+                </div>
+
+                <!-- Recursion Tree Panel -->
+                <div class="vis-panel">
+                    <div class="vis-panel-header">
+                        <div class="vis-title">
+                            <span>🌲 Recursive Tree Structure</span>
+                            <span class="tree-nodes-badge"><span id="treeVisitedCount">0</span>/<span id="treeTotalNodes">7</span> Visited</span>
+                        </div>
+                        <span class="badge-sub">Divide & Conquer Decomposition</span>
+                    </div>
+                    <div class="tree-scroll-container">
+                        <div id="recursionTreeWrapper" class="recursion-tree-wrapper">
+                            <!-- Dynamically generated SVG / DOM tree -->
+                        </div>
+                    </div>
+                    <div class="tree-legend">
+                        <div class="tree-legend-item"><span class="node-sample pending"></span> Pending Call</div>
+                        <div class="tree-legend-item"><span class="node-sample active"></span> Currently Active</div>
+                        <div class="tree-legend-item"><span class="node-sample completed"></span> Completed</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= SECTION 3: C++ CODE WITH REAL-TIME TRACING ================= -->
+        <section id="cpp-code" class="card-section">
+            <div class="section-header">
+                <div>
+                    <h2><span class="sec-num">03.</span> C++ Implementation & Line-by-Line Tracing</h2>
+                    <p class="sec-desc">Watch the exact line of code execute synchronously as disks move in the simulator.</p>
+                </div>
+                <div class="code-actions">
+                    <button id="copyCodeBtn" class="btn btn-secondary btn-sm">📋 Copy C++ Code</button>
+                    <a href="hanoi.cpp" download="hanoi.cpp" class="btn btn-outline btn-sm">💾 Download hanoi.cpp</a>
+                </div>
+            </div>
+
+            <!-- Code Tabs -->
+            <div class="code-tabs-nav">
+                <button class="code-tab-btn active" data-tab="tab-recursive">1. Classic Recursive (Syllabus Standard)</button>
+                <button class="code-tab-btn" data-tab="tab-iterative">2. Iterative (Explicit Stack)</button>
+                <button class="code-tab-btn" data-tab="tab-bitwise">3. Bitwise Formula (Interview Special)</button>
+            </div>
+
+            <!-- Tab 1: Recursive with live tracing -->
+            <div class="code-tab-content active" id="tab-recursive">
+                <div class="code-editor-mock">
+                    <div class="code-editor-header">
+                        <div class="editor-dots">
+                            <span class="dot dot-red"></span>
+                            <span class="dot dot-yellow"></span>
+                            <span class="dot dot-green"></span>
+                        </div>
+                        <span class="editor-filename">hanoi_recursive.cpp (Live Synced with Simulator)</span>
+                        <span class="editor-compiler">C++20 • g++ -O2</span>
+                    </div>
+                    <div class="code-editor-body" id="codeEditorBody">
+                        <!-- Line-by-line code blocks -->
+                        <div class="code-line" data-line="1"><span class="line-no"> 1</span><span class="code-text"><span class="keyword">#include</span> <span class="string">&lt;iostream&gt;</span></span></div>
+                        <div class="code-line" data-line="2"><span class="line-no"> 2</span><span class="code-text"><span class="keyword">using namespace</span> std;</span></div>
+                        <div class="code-line" data-line="3"><span class="line-no"> 3</span><span class="code-text"></span></div>
+                        <div class="code-line" data-line="4"><span class="line-no"> 4</span><span class="code-text"><span class="comment">// Function to solve Tower of Hanoi puzzle</span></span></div>
+                        <div class="code-line" data-line="5"><span class="line-no"> 5</span><span class="code-text"><span class="type">void</span> <span class="func">towerOfHanoi</span>(<span class="type">int</span> n, <span class="type">char</span> from_rod, <span class="type">char</span> to_rod, <span class="type">char</span> aux_rod) {</span></div>
+                        <div class="code-line" data-line="6"><span class="line-no"> 6</span><span class="code-text">    <span class="comment">// BASE CASE: Only 1 disk to move</span></span></div>
+                        <div class="code-line" data-line="7" id="line-base-case"><span class="line-no"> 7</span><span class="code-text">    <span class="keyword">if</span> (n == 1) {</span></div>
+                        <div class="code-line" data-line="8" id="line-base-move"><span class="line-no"> 8</span><span class="code-text">        cout &lt;&lt; <span class="string">"Move disk 1 from "</span> &lt;&lt; from_rod &lt;&lt; <span class="string">" to "</span> &lt;&lt; to_rod &lt;&lt; endl;</span></div>
+                        <div class="code-line" data-line="9" id="line-base-return"><span class="line-no"> 9</span><span class="code-text">        <span class="keyword">return</span>;</span></div>
+                        <div class="code-line" data-line="10"><span class="line-no">10</span><span class="code-text">    }</span></div>
+                        <div class="code-line" data-line="11"><span class="line-no">11</span><span class="code-text"></span></div>
+                        <div class="code-line" data-line="12" id="line-call-1"><span class="line-no">12</span><span class="code-text">    <span class="comment">// STEP 1: Move top (n-1) disks from Source -&gt; Auxiliary using Destination</span></span></div>
+                        <div class="code-line" data-line="13"><span class="line-no">13</span><span class="code-text">    <span class="func">towerOfHanoi</span>(n - 1, from_rod, aux_rod, to_rod);</span></div>
+                        <div class="code-line" data-line="14"><span class="line-no">14</span><span class="code-text"></span></div>
+                        <div class="code-line" data-line="15" id="line-move-n"><span class="line-no">15</span><span class="code-text">    <span class="comment">// STEP 2: Move the n-th (largest) disk from Source -&gt; Destination</span></span></div>
+                        <div class="code-line" data-line="16"><span class="line-no">16</span><span class="code-text">    cout &lt;&lt; <span class="string">"Move disk "</span> &lt;&lt; n &lt;&lt; <span class="string">" from "</span> &lt;&lt; from_rod &lt;&lt; <span class="string">" to "</span> &lt;&lt; to_rod &lt;&lt; endl;</span></div>
+                        <div class="code-line" data-line="17"><span class="line-no">17</span><span class="code-text"></span></div>
+                        <div class="code-line" data-line="18" id="line-call-2"><span class="line-no">18</span><span class="code-text">    <span class="comment">// STEP 3: Move (n-1) disks from Auxiliary -&gt; Destination using Source</span></span></div>
+                        <div class="code-line" data-line="19"><span class="line-no">19</span><span class="code-text">    <span class="func">towerOfHanoi</span>(n - 1, aux_rod, to_rod, from_rod);</span></div>
+                        <div class="code-line" data-line="20"><span class="line-no">20</span><span class="code-text">}</span></div>
+                        <div class="code-line" data-line="21"><span class="line-no">21</span><span class="code-text"></span></div>
+                        <div class="code-line" data-line="22"><span class="line-no">22</span><span class="code-text"><span class="type">int</span> <span class="func">main</span>() {</span></div>
+                        <div class="code-line" data-line="23"><span class="line-no">23</span><span class="code-text">    <span class="type">int</span> n = 3; <span class="comment">// Number of disks</span></span></div>
+                        <div class="code-line" data-line="24"><span class="line-no">24</span><span class="code-text">    <span class="func">towerOfHanoi</span>(n, <span class="char">'A'</span>, <span class="char">'C'</span>, <span class="char">'B'</span>); <span class="comment">// A=Source, C=Destination, B=Auxiliary</span></span></div>
+                        <div class="code-line" data-line="25"><span class="line-no">25</span><span class="code-text">    <span class="keyword">return</span> 0;</span></div>
+                        <div class="code-line" data-line="26"><span class="line-no">26</span><span class="code-text">}</span></div>
+                    </div>
+                </div>
+
+                <!-- Explanation Annotations -->
+                <div class="code-breakdown-cards">
+                    <div class="breakdown-card">
+                        <div class="bc-num">1</div>
+                        <h4>Base Case (Line 7-9)</h4>
+                        <p>When <code>n == 1</code>, no helper rod is needed. We move disk 1 directly to the target rod and return. This prevents infinite recursion and stack overflow.</p>
+                    </div>
+                    <div class="breakdown-card">
+                        <div class="bc-num">2</div>
+                        <h4>First Recursive Call (Line 13)</h4>
+                        <p>Notice the parameter order: <code>(n-1, from_rod, aux_rod, to_rod)</code>. Here, the roles swap! <code>aux_rod</code> becomes destination, and <code>to_rod</code> acts as temporary helper.</p>
+                    </div>
+                    <div class="breakdown-card">
+                        <div class="bc-num">3</div>
+                        <h4>Second Recursive Call (Line 19)</h4>
+                        <p>Parameter order: <code>(n-1, aux_rod, to_rod, from_rod)</code>. We move the <code>(n-1)</code> disks currently resting on <code>aux_rod</code> to <code>to_rod</code>, using <code>from_rod</code> as helper.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab 2: Iterative Explicit Stack -->
+            <div class="code-tab-content" id="tab-iterative">
+                <div class="code-editor-mock">
+                    <div class="code-editor-header">
+                        <span class="editor-filename">hanoi_explicit_stack.cpp (How OS handles recursion)</span>
+                    </div>
+                    <div class="code-editor-body">
+<pre><code><span class="keyword">#include</span> <span class="string">&lt;iostream&gt;</span>
+<span class="keyword">#include</span> <span class="string">&lt;stack&gt;</span>
+<span class="keyword">using namespace</span> std;
+
+<span class="keyword">struct</span> <span class="type">StackFrame</span> {
+    <span class="type">int</span> n;
+    <span class="type">char</span> from_rod, to_rod, aux_rod;
+    <span class="type">int</span> stage; <span class="comment">// 0: start subproblem 1, 1: after subproblem 1, 2: after subproblem 2</span>
+};
+
+<span class="type">void</span> <span class="func">towerOfHanoiIterative</span>(<span class="type">int</span> n, <span class="type">char</span> from, <span class="type">char</span> to, <span class="type">char</span> aux) {
+    stack&lt;StackFrame&gt; st;
+    st.push({n, from, to, aux, 0});
+
+    <span class="keyword">while</span> (!st.empty()) {
+        StackFrame &amp;curr = st.top();
+
+        <span class="keyword">if</span> (curr.n == 1) {
+            cout &lt;&lt; <span class="string">"Move disk 1 from "</span> &lt;&lt; curr.from_rod &lt;&lt; <span class="string">" to "</span> &lt;&lt; curr.to_rod &lt;&lt; endl;
+            st.pop();
+            <span class="keyword">continue</span>;
+        }
+
+        <span class="keyword">if</span> (curr.stage == 0) {
+            curr.stage = 1;
+            st.push({curr.n - 1, curr.from_rod, curr.aux_rod, curr.to_rod, 0});
+        } <span class="keyword">else if</span> (curr.stage == 1) {
+            cout &lt;&lt; <span class="string">"Move disk "</span> &lt;&lt; curr.n &lt;&lt; <span class="string">" from "</span> &lt;&lt; curr.from_rod &lt;&lt; <span class="string">" to "</span> &lt;&lt; curr.to_rod &lt;&lt; endl;
+            curr.stage = 2;
+            st.push({curr.n - 1, curr.aux_rod, curr.to_rod, curr.from_rod, 0});
+        } <span class="keyword">else</span> {
+            st.pop();
+        }
+    }
+}</code></pre>
+                    </div>
+                </div>
+                <div class="panel-callout">
+                    📌 <strong>Viva Highlight:</strong> Any recursive algorithm can be transformed into an iterative algorithm using an explicit stack data structure (<code>std::stack</code> in C++ STL).
+                </div>
+            </div>
+
+            <!-- Tab 3: Bitwise Formula -->
+            <div class="code-tab-content" id="tab-bitwise">
+                <div class="code-editor-mock">
+                    <div class="code-editor-header">
+                        <span class="editor-filename">hanoi_bitwise.cpp (O(1) extra space formula)</span>
+                    </div>
+                    <div class="code-editor-body">
+<pre><code><span class="keyword">#include</span> <span class="string">&lt;iostream&gt;</span>
+<span class="keyword">using namespace</span> std;
+
+<span class="type">void</span> <span class="func">explainBitwisePattern</span>(<span class="type">int</span> n) {
+    <span class="type">long long</span> totalMoves = (1LL &lt;&lt; n) - 1; <span class="comment">// 2^n - 1 using bitshift</span>
+
+    <span class="keyword">for</span> (<span class="type">long long</span> k = 1; k &lt;= totalMoves; ++k) {
+        <span class="comment">// The disk to move at step k is determined by the lowest set bit in k!</span>
+        <span class="type">int</span> diskToMove = __builtin_ffs(k); <span class="comment">// 1-based index of lowest set bit</span>
+        
+        <span class="comment">// Odd steps always move disk 1. Even steps move other disks.</span>
+        cout &lt;&lt; <span class="string">"Step "</span> &lt;&lt; k &lt;&lt; <span class="string">": Move disk "</span> &lt;&lt; diskToMove &lt;&lt; endl;
+    }
+}</code></pre>
+                    </div>
+                </div>
+                <div class="panel-callout">
+                    🔥 <strong>Competitive Programming Trick:</strong> At step <code>k</code>, the disk moved is exactly <code>1 + number of trailing zeros in k</code>. Disk 1 moves every 2 steps (at odd numbers: 1, 3, 5, 7...).
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= SECTION 4: MATHEMATICAL DERIVATION & PROOFS ================= -->
+        <section id="math-derivation" class="card-section">
+            <div class="section-header">
+                <div>
+                    <h2><span class="sec-num">04.</span> Mathematical Analysis & University Exam Proofs</h2>
+                    <p class="sec-desc">Step-by-step recurrence expansion, mathematical induction, and space-time complexity.</p>
+                </div>
+            </div>
+
+            <div class="math-grid">
+                <!-- Method 1: Repeated Substitution -->
+                <div class="math-card">
+                    <div class="math-card-header">
+                        <span class="math-badge">Method 1</span>
+                        <h3>Repeated Substitution (Iteration Method)</h3>
+                    </div>
+                    <div class="math-body">
+                        <p>Let $T(n)$ be the time (number of moves) to solve for $n$ disks:</p>
+                        <div class="equation-box">
+                            $$T(n) = 2T(n-1) + 1 \quad \text{--- (Eq. 1)}$$
+                        </div>
+                        <p>Substitute $T(n-1) = 2T(n-2) + 1$ into (Eq. 1):</p>
+                        <div class="equation-box">
+                            $$T(n) = 2[2T(n-2) + 1] + 1 = 4T(n-2) + 2 + 1$$
+                            $$T(n) = 2^2 T(n-2) + (2^1 + 2^0)$$
+                        </div>
+                        <p>Substitute $T(n-2) = 2T(n-3) + 1$:</p>
+                        <div class="equation-box">
+                            $$T(n) = 2^3 T(n-3) + (2^2 + 2^1 + 2^0)$$
+                        </div>
+                        <p>Continuing this pattern for $k$ steps:</p>
+                        <div class="equation-box">
+                            $$T(n) = 2^k T(n-k) + \sum_{i=0}^{k-1} 2^i$$
+                        </div>
+                        <p>Base condition occurs when $n - k = 1 \implies k = n - 1$ and $T(1) = 1$:</p>
+                        <div class="equation-box highlight">
+                            $$T(n) = 2^{n-1} T(1) + \sum_{i=0}^{n-2} 2^i = \sum_{i=0}^{n-1} 2^i = \frac{2^n - 1}{2 - 1} = \mathbf{2^n - 1}$$
+                        </div>
+                        <p class="math-conclusion">Hence, Time Complexity is $\mathbf{\Theta(2^n)}$ or $\mathbf{O(2^n)}$.</p>
+                    </div>
+                </div>
+
+                <!-- Method 2: Mathematical Induction -->
+                <div class="math-card">
+                    <div class="math-card-header">
+                        <span class="math-badge">Method 2</span>
+                        <h3>Proof by Mathematical Induction</h3>
+                    </div>
+                    <div class="math-body">
+                        <p><strong>Proposition $P(n)$</strong>: The minimum number of moves to transfer $n$ disks is $M(n) = 2^n - 1$.</p>
+                        
+                        <div class="proof-step">
+                            <span class="step-tag">Step 1: Base Case (n = 1)</span>
+                            <p>For $n = 1$, we move the single disk directly from Source to Destination: $M(1) = 1$.</p>
+                            <p>Formula check: $2^1 - 1 = 2 - 1 = 1$. True for $n = 1$.</p>
+                        </div>
+
+                        <div class="proof-step">
+                            <span class="step-tag">Step 2: Induction Hypothesis</span>
+                            <p>Assume $P(k)$ is true for some positive integer $k$. That is:</p>
+                            <div class="equation-box">$$M(k) = 2^k - 1$$</div>
+                        </div>
+
+                        <div class="proof-step">
+                            <span class="step-tag">Step 3: Inductive Step (Prove for n = k + 1)</span>
+                            <p>To transfer $(k + 1)$ disks:</p>
+                            <ol class="proof-list">
+                                <li>Move top $k$ disks from Source to Auxiliary: takes $M(k)$ moves.</li>
+                                <li>Move largest $(k+1)$-th disk to Destination: takes $1$ move.</li>
+                                <li>Move $k$ disks from Auxiliary to Destination: takes $M(k)$ moves.</li>
+                            </ol>
+                            <div class="equation-box highlight">
+                                $$M(k+1) = M(k) + 1 + M(k) = 2M(k) + 1$$
+                                $$= 2(2^k - 1) + 1 = 2^{k+1} - 2 + 1 = \mathbf{2^{k+1} - 1}$$
+                            </div>
+                            <p class="math-conclusion">Therefore, by the principle of mathematical induction, $P(n)$ holds $\forall n \ge 1$. Q.E.D.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Space Complexity & Real-world Time Calculator -->
+            <div class="complexity-calculator-grid">
+                <div class="calc-card">
+                    <h3>🧠 Why is Space Complexity O(n)?</h3>
+                    <p>A very common 2nd-year exam confusion is: <em>"If total function calls are $2^{n+1}-1$, why isn't space complexity $O(2^n)$?"</em></p>
+                    <ul class="dsa-points-list">
+                        <li>Space complexity in recursion is determined by the <strong>maximum call stack depth at any single instant</strong>, NOT the total calls made over time.</li>
+                        <li>Since the algorithm follows Depth-First Search (DFS) traversal down the tree, each branch completes and pops its stack frames before the next branch begins.</li>
+                        <li>The maximum depth of the recursion tree is exactly $n$. Hence auxiliary space is <strong>$O(n)$</strong>.</li>
+                    </ul>
+                </div>
+
+                <div class="calc-card interactive-calc">
+                    <h3>⚡ Interactive Real-World Calculator</h3>
+                    <div class="calc-input-row">
+                        <label for="customNInput">Test $n$ disks:</label>
+                        <input type="number" id="customNInput" min="1" max="64" value="10">
+                        <button id="calculateNBtn" class="btn btn-primary btn-sm">Calculate</button>
+                    </div>
+                    <div class="calc-results-box" id="calcResultsBox">
+                        <div class="calc-res-item">
+                            <span class="c-label">Total Moves:</span>
+                            <span class="c-val" id="calcMovesVal">1,023</span>
+                        </div>
+                        <div class="calc-res-item">
+                            <span class="c-label">At 1 move / sec:</span>
+                            <span class="c-val" id="calcTime1SecVal">~17 minutes</span>
+                        </div>
+                        <div class="calc-res-item">
+                            <span class="c-label">At 1 billion moves / sec (1 GHz CPU):</span>
+                            <span class="c-val" id="calcTime1GhzVal">~0.000001 seconds</span>
+                        </div>
+                        <div class="legend-note" id="legendNote">
+                            🌌 <em>For $n = 64$ disks, it would require $1.84 \times 10^{19}$ moves, which is approx <strong>584 billion years</strong>—longer than the age of the Universe (13.8 billion years)!</em>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= SECTION 5: VIVA QUESTIONS & INTERACTIVE QUIZ ================= -->
+        <section id="viva-quiz" class="card-section">
+            <div class="section-header">
+                <div>
+                    <h2><span class="sec-num">05.</span> College Exam & Viva Kit + Interactive Quiz</h2>
+                    <p class="sec-desc">Test your conceptual understanding and master questions frequently asked by university lab examiners.</p>
+                </div>
+            </div>
+
+            <!-- Viva FAQ Accordion -->
+            <div class="viva-section">
+                <h3 class="subsection-title">🎯 Top 8 Viva & Practical Exam Questions</h3>
+                <div class="accordion-list">
+                    <div class="accordion-item">
+                        <button class="accordion-header">
+                            <span>Q1. What happens if we swap the parameters in the recursive call?</span>
+                            <span class="acc-chevron">▼</span>
+                        </button>
+                        <div class="accordion-content">
+                            <p>In <code>towerOfHanoi(n-1, from, aux, to)</code>, if you mistakenly pass <code>(n-1, from, to, aux)</code>, the disks will be moved to the wrong rod (Destination instead of Auxiliary helper), violating the algorithm's invariant and resulting in an incorrect final arrangement.</p>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <button class="accordion-header">
+                            <span>Q2. How many total recursive function calls are made for $n$ disks?</span>
+                            <span class="acc-chevron">▼</span>
+                        </button>
+                        <div class="accordion-content">
+                            <p>For $n$ disks, the total number of function invocations is $2^{n+1} - 1$. For example, for $n = 3$, total calls = $2^4 - 1 = 15$ calls (7 moves + base cases/internal nodes). The moves themselves equal $2^n - 1 = 7$.</p>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <button class="accordion-header">
+                            <span>Q3. Can Tower of Hanoi be solved in less than $2^n - 1$ moves?</span>
+                            <span class="acc-chevron">▼</span>
+                        </button>
+                        <div class="accordion-content">
+                            <p><strong>No.</strong> It is mathematically proven that $2^n - 1$ is the strictly minimal number of moves required under the standard 3-peg rules. To move the largest disk, all $(n-1)$ disks must first be on the helper rod ($2^{n-1}-1$ moves), then the largest disk moves (1 move), then the $(n-1)$ disks must be moved again ($2^{n-1}-1$ moves).</p>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <button class="accordion-header">
+                            <span>Q4. What is the relation between Tower of Hanoi and Binary Gray Code?</span>
+                            <span class="acc-chevron">▼</span>
+                        </button>
+                        <div class="accordion-content">
+                            <p>In an $n$-bit Binary Gray code, exactly one bit changes between successive numbers. The position of the bit that changes in step $k$ corresponds exactly to the disk number moved at step $k$ in Tower of Hanoi! (e.g., bit 0 changes every 2 steps $\to$ disk 1 moves every 2 steps).</p>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <button class="accordion-header">
+                            <span>Q5. Which algorithmic paradigm does Tower of Hanoi belong to?</span>
+                            <span class="acc-chevron">▼</span>
+                        </button>
+                        <div class="accordion-content">
+                            <p><strong>Divide and Conquer</strong>. It divides the problem of moving $n$ disks into two smaller subproblems of moving $(n-1)$ disks, plus one constant-time work of moving the $n$-th disk.</p>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <button class="accordion-header">
+                            <span>Q6. What happens if $n=0$ is entered?</span>
+                            <span class="acc-chevron">▼</span>
+                        </button>
+                        <div class="accordion-content">
+                            <p>If handled properly with a base check <code>if (n &lt;= 0) return;</code>, 0 moves are made. If only <code>if (n == 1)</code> is written as base case, passing $n = 0$ will cause infinite recursion and crash with a <strong>Stack Overflow (Segmentation Fault)</strong>.</p>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <button class="accordion-header">
+                            <span>Q7. What traversal of the recursion tree yields the sequence of disk moves?</span>
+                            <span class="acc-chevron">▼</span>
+                        </button>
+                        <div class="accordion-content">
+                            <p><strong>In-Order Traversal (LVR)</strong>! Subproblem 1 (Left branch) is solved first, then the $n$-th disk move is printed (Visit root), then Subproblem 2 (Right branch) is solved.</p>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <button class="accordion-header">
+                            <span>Q8. Can Tower of Hanoi have a better time complexity with 4 pegs (Frame-Stewart algorithm)?</span>
+                            <span class="acc-chevron">▼</span>
+                        </button>
+                        <div class="accordion-content">
+                            <p>Yes! With $k = 4$ pegs (Reve's Puzzle), the Frame-Stewart algorithm reduces the time complexity to sub-exponential $O(2^{\sqrt{2n}})$, significantly faster than 3 pegs!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Interactive Quiz Section -->
+            <div class="quiz-container">
+                <div class="quiz-header">
+                    <div>
+                        <h3 class="subsection-title">🧪 2nd Year DSA Quick Knowledge Check</h3>
+                        <p class="quiz-sub">5 multiple-choice questions to test your exam readiness.</p>
+                    </div>
+                    <div class="quiz-score-badge">
+                        Score: <span id="quizScore">0</span> / 5
+                    </div>
+                </div>
+
+                <div id="quizQuestionsContainer" class="quiz-body">
+                    <!-- Injected by JavaScript -->
+                </div>
+
+                <div class="quiz-footer">
+                    <button id="resetQuizBtn" class="btn btn-secondary btn-sm">Retake Quiz</button>
+                    <span id="quizFeedbackMsg" class="quiz-feedback-text">Answer the questions above to verify your understanding!</span>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ================= FOOTER ================= -->
+    <footer class="app-footer">
+        <div class="footer-content">
+            <p>Built with ❤️ for 2nd Year Computer Science & Engineering Students • Data Structures & Algorithms</p>
+            <p class="footer-sub">Standard C++20 Implementation • Zero External Dependencies • 100% Offline Compatible</p>
+        </div>
+    </footer>
+
+    <!-- App Logic Script -->
+    <script src="app.js"></script>
+</body>
+</html>
